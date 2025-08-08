@@ -31,24 +31,24 @@ The "Recipe Sharing API" project aims to develop an API where users can share, s
 - Login: Users can log in using their email and password.
 - Profile Management: Users can update their profile information and preferences.
 
-1. Recipe Management
+2. Recipe Management
 
 - Create Recipes: Users can create and publish recipes with ingredients, instructions, and photos.
 - Search Recipes: Users can search for recipes based on keywords, ingredients, cuisine types, and dietary preferences.
 - Save Favorite Recipes: Users can save recipes to their profile for quick access.
 
-1. Community Interaction
+3. Community Interaction
 
 - Rate Recipes: Users can rate recipes on a scale and provide feedback.
 - Comment on Recipes: Users can leave comments on recipes, ask questions, or share tips.
 - Follow Users: Users can follow other users to stay updated on their recipes and activity.
 
-1. Social Features
+4. Social Features
 
 - Share Recipes: Users can share recipes with friends via email, social media, or direct messaging.
 - Tagging and Categorization: Recipes can be tagged and categorized by cuisine type, meal type, and dietary restrictions.
 
-1. Notifications
+5. Notifications
 
 - Activity Notifications: Users receive notifications for likes, comments, and follows.
 - Recipe Updates: Users can opt-in to receive updates on recipes they follow.
@@ -89,7 +89,7 @@ GET /profile: Get user profile details.
 PUT /profile: Update user profile.
 ```
 
-1. Recipe Management
+3. Recipe Management
 
 ```bash
 POST /recipes: Create a new recipe.
@@ -97,7 +97,7 @@ GET /recipes/{id}: Get details of a specific recipe.
 GET /recipes/search: Search for recipes based on criteria.
 ```
 
-1. Interaction Features
+3. Interaction Features
 
 ```bash
 POST /recipes/{id}/rate: Rate a recipe.
@@ -106,14 +106,14 @@ POST /recipes/{id}/save: Save a recipe to favorites.
 POST /users/{user_id}/follow: Follow another user.
 ```
 
-1. Social Features
+4. Social Features
 
 ```bash
 POST /recipes/{id}/share: Share a recipe.
 GET /users/{user_id}/recipes: Get recipes published by a user.
 ```
 
-1. Notifications
+5. Notifications
 
 ```bash
 GET /notifications: Get notifications for user activity.
