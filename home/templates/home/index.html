@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}DishCovery - Discover & Share Amazing Recipes{% endblock %}
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-3 fw-bold mb-4">Discover & Share Amazing Recipes</h1>
+            <p class="lead mb-5">Join our community of food enthusiasts and take your cooking to the next level</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="register.html" class="btn btn-primary btn-lg px-4">Get Started</a>
+                <a href="#recipes" class="btn btn-outline-light btn-lg px-4">Explore Recipes</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Why Choose FlavorShare?</h2>
+                <p class="lead text-muted">The ultimate platform for culinary enthusiasts</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="text-center p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <h3>Recipe Collection</h3>
+                        <p class="text-muted">Browse thousands of recipes from around the world, from quick weekday meals to gourmet dishes.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <h3>Share Your Creations</h3>
+                        <p class="text-muted">Upload your own recipes with photos, ingredients, and step-by-step instructions.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3>Community Interaction</h3>
+                        <p class="text-muted">Rate, comment, and discuss recipes with other food lovers in our vibrant community.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3>Save Favorites</h3>
+                        <p class="text-muted">Create your personal cookbook by saving recipes to your account for quick access.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>Advanced Search</h3>
+                        <p class="text-muted">Find exactly what you're looking for with our powerful search and filtering options.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-4">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Mobile Friendly</h3>
+                        <p class="text-muted">Access your recipes anywhere with our fully responsive design and mobile app.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Recipes Section -->
+    <section id="recipes" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Popular Recipes</h2>
+                <p class="lead text-muted">Discover what our community is cooking</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="recipe-card card h-100">
+                        <img src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=735&q=80" class="card-img-top" alt="Pasta Dish">
+                        <div class="card-body">
+                            <h5 class="card-title">Creamy Garlic Pasta</h5>
+                            <p class="card-text text-muted">A delicious 20-minute pasta dish with a rich garlic cream sauce.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <span class="ms-1">4.8 (124)</span>
+                                </div>
+                                <span><i class="fas fa-clock me-1"></i>20 min</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="recipe-card card h-100">
+                        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80" class="card-img-top" alt="Steak Dish">
+                        <div class="card-body">
+                            <h5 class="card-title">Perfect Ribeye Steak</h5>
+                            <p class="card-text text-muted">Juicy, restaurant-quality steak cooked to perfection at home.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <span class="ms-1">4.9 (87)</span>
+                                </div>
+                                <span><i class="fas fa-clock me-1"></i>30 min</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="recipe-card card h-100">
+                        <img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=749&q=80" class="card-img-top" alt="Pancakes">
+                        <div class="card-body">
+                            <h5 class="card-title">Fluffy Blueberry Pancakes</h5>
+                            <p class="card-text text-muted">Light and airy pancakes bursting with fresh blueberries.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <span class="ms-1">4.7 (156)</span>
+                                </div>
+                                <span><i class="fas fa-clock me-1"></i>25 min</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="#" class="btn btn-secondary btn-lg">Browse All Recipes</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">What Our Users Say</h2>
+                <p class="lead text-muted">Join thousands of happy home cooks</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 p-4">
+                        <div class="text-center mb-3">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" class="testimonial-img" alt="User">
+                        </div>
+                        <div class="card-body text-center">
+                            <p class="card-text">"FlavorShare has completely transformed my cooking. I've discovered so many amazing recipes and made friends with fellow food lovers!"</p>
+                            <h5 class="card-title mt-3">Sarah Johnson</h5>
+                            <p class="text-muted">Home Cook</p>
+                            <div>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 p-4">
+                        <div class="text-center mb-3">
+                            <img src="https://randomuser.me/api/portraits/men/75.jpg" class="testimonial-img" alt="User">
+                        </div>
+                        <div class="card-body text-center">
+                            <p class="card-text">"As a professional chef, I love sharing my recipes with the FlavorShare community. The feedback and engagement are incredible!"</p>
+                            <h5 class="card-title mt-3">Michael Chen</h5>
+                            <p class="text-muted">Professional Chef</p>
+                            <div>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 p-4">
+                        <div class="text-center mb-3">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" class="testimonial-img" alt="User">
+                        </div>
+                        <div class="card-body text-center">
+                            <p class="card-text">"I've tried at least 50 recipes from FlavorShare and haven't been disappointed once. The instructions are always clear and easy to follow."</p>
+                            <h5 class="card-title mt-3">Emma Rodriguez</h5>
+                            <p class="text-muted">Food Blogger</p>
+                            <div>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="fw-bold mb-3">Get Weekly Recipe Inspiration</h2>
+                    <p class="lead mb-4">Sign up for our newsletter and receive the best recipes directly in your inbox</p>
+                    <form class="row g-2 justify-content-center">
+                        <div class="col-md-8">
+                            <input type="email" class="form-control form-control-lg" placeholder="Your email address">
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5 bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h2 class="fw-bold mb-4">About FlavorShare</h2>
+                    <p class="lead">Connecting food lovers through the joy of cooking and sharing recipes.</p>
+                    <p>FlavorShare was founded in 2023 with a simple mission: to create a platform where culinary enthusiasts of all skill levels could come together to discover, share, and celebrate great food.</p>
+                    <p>What started as a small community project has grown into a vibrant network of home cooks, professional chefs, and food bloggers from around the world.</p>
+                    <a href="#" class="btn btn-outline-dark mt-3">Learn More</a>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://images.unsplash.com/photo-1466637574441-749b8f19452f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80" class="img-fluid rounded" alt="Cooking Together">
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

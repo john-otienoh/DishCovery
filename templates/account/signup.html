@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Sign In</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'account_signup' %}">
+                        {% csrf_token %}
+                        
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                Invalid username or password
+                            </div>
+                        {% endif %}
+                        <div class="mb-3">
+                                <label for="id_username" class="form-label">UserName</label>
+                                {{ form.username }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Email</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="id_first_name" class="form-label">Create Password</label>
+                                {{ form.password1 }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_last_name" class="form-label">Confirm Password</label>
+                                {{ form.password2 }}
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Sign In</button>
+                        
+                        <div class="text-center mt-4">
+                            <p class="mb-0">Already have an account? 
+                                <a href="{% url 'account_login' %}" class="text-decoration-none">Log In</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</br>
+{% endblock %}
