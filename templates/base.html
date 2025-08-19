@@ -10,7 +10,8 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>{% block title %}{% endblock %}</title>
-    {% block css %}<link rel="stylesheet" href="{% static 'css/recipe.css' %}">{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/recipe.css' %}">
+    <style>{% block css %}{% endblock %}</style>
 </head>
 <body>
     <!-- Navigation -->
@@ -38,14 +39,14 @@
                     </li>
                 </ul>
                 {% if user.is_authenticated %}
-                <div class="ms-lg-3 mt-3 mt-lg-0">
-                    <a href="{% url 'profile' %}" class="btn btn-outline-light me-2">Profile</a>
-                    <a href="{% url 'account_logout' %}" class="btn btn-primary">Logout</a>
+                <div class="ms-lg-3 mt-3 mt-lg-0 btn-group">
+                    <a href="{ url 'profile' %}" class="btn btn-outline-light me-2">Profile</a>
+                    <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
                 </div>
                 {% else %}
                 <div class="ms-lg-3 mt-3 mt-lg-0">
-                    <a href="{% url 'account_login' %}" class="btn btn-outline-light me-2">Login</a>
-                    <a href="{% url 'account_signup' %}" class="btn btn-primary">Sign Up</a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-light me-2">Login</a>
+                    <a href="{% url 'register' %}" class="btn btn-primary">Sign Up</a>
                 </div>
                 {% endif %}
             </div>
