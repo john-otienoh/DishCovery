@@ -142,40 +142,35 @@ dishcovery/
 ├── manage.py
 ├── requirements.txt
 ├── .env.example
-├── config/
-│   ├── init.py
-│   ├── settings.py
+├── README.md
+├── dishcovery/
+│   ├── __init__.py
+│   ├── settings/
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   ├── development.py
+│   │   └── production.py
 │   ├── urls.py
-│   ├── wsgi.py
-|   ├── asgi.py
+│   └── wsgi.py
 ├── apps/
 │   ├── users/
 │   │   ├── models.py
 │   │   ├── serializers.py
 │   │   ├── views.py
 │   │   ├── urls.py
+│   │   └── ...
 │   ├── recipes/
 │   │   ├── models.py
 │   │   ├── serializers.py
 │   │   ├── views.py
 │   │   ├── urls.py
-│   ├── interactions/
-│   │   ├── models.py
-│   │   ├── serializers.py
-│   │   ├── views.py
-│   │   ├── urls.py
-│   ├── notifications/
+│   │   ├── filters.py
+│   │   └── ...
+│   └── interactions/
 │       ├── models.py
 │       ├── serializers.py
 │       ├── views.py
-│       ├── urls.py
-├── templates/
-│   ├── base.html
-│   ├── index.html
-│   ├── recipes/
-│   ├── users/
-├── static/
-│   ├── css/
-│   ├── js/
-├── media/
+│       └── urls.py
+└── scripts/
+    └── seed_data.py
 ```

@@ -14,23 +14,33 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
 from django.contrib import admin
-from django.urls import include, path
-from django.conf.urls.static import static
+from django.urls import path, include
 from django.conf import settings
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from django.conf.urls.static import static
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+    SpectacularRedocView,
+)
+
+api_v1_patterns = [
+    path("auth/", include("apps.users.urls.auth")),
+    path("users/", include("apps.users.urls.urls")),
+    path("recipes/", include("apps.recipes.urls")),
+    path("interactions/", include("apps.interactions.urls")),
+    path("notifications/", include("apps.notifications.urls")),
+]
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include("apps.users.urls")),
-    path("api/", include("apps.recipes.urls")),
-    path("api/", include("apps.interactions.urls")),
-    path("api/", include("apps.notifications.urls")),
+    # API v1
+    path("api/v1/", include(api_v1_patterns)),
+    # OpenAPI schema
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
-    path("__reload__/", include("django_browser_reload.urls")),
-]
+    path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
+] 
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

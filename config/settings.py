@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_filters",
     "drf_spectacular",
+    "corsheaders",
+    "rest_framework_simplejwt.token_blacklist",
 
     # Local Apps
     "apps.users",
@@ -72,7 +74,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "config.urls"
-# AUTH_USER_MODEL = "users.User"
+AUTH_USER_MODEL = "apps.users.User"
 
 TEMPLATES = [
     {
@@ -209,6 +211,7 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": False,
     "AUTH_HEADER_TYPES": ("Bearer",),
+    "UPDATE_LAST_TOKEN": True,
 }
 
 # ─── CORS ─────────────────────────────────────────────────────────────────────
@@ -224,4 +227,11 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Recipe sharing & management platform API",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
+    "CONTACT": {"name": "DishCovery Team"},
+    "TAGS": [
+        {"name": "Auth", "description": "Registration, login, token refresh & logout"},
+        {"name": "Users", "description": "User profiles and social follows"},
+        {"name": "Recipes", "description": "Create, retrieve, update and delete recipes"},
+        {"name": "Interactions", "description": "Ratings, comments, favorites, and shares"},
+        {"name": "Notifications", "description": "User activity notifications"},
 }
