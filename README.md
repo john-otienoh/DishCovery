@@ -135,3 +135,47 @@ Use load balancing to distribute traffic evenly across servers.
 
 Provide comprehensive API documentation using tools like Swagger.</hr>
 Create user guides and developer documentation to assist with integration and usage
+
+## Project Structure
+```bash
+dishcovery/
+├── manage.py
+├── requirements.txt
+├── .env.example
+├── config/
+│   ├── init.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── wsgi.py
+|   ├── asgi.py
+├── apps/
+│   ├── users/
+│   │   ├── models.py
+│   │   ├── serializers.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   ├── recipes/
+│   │   ├── models.py
+│   │   ├── serializers.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   ├── interactions/
+│   │   ├── models.py
+│   │   ├── serializers.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   ├── notifications/
+│       ├── models.py
+│       ├── serializers.py
+│       ├── views.py
+│       ├── urls.py
+├── templates/
+│   ├── base.html
+│   ├── index.html
+│   ├── recipes/
+│   ├── users/
+├── static/
+│   ├── css/
+│   ├── js/
+├── media/
+```

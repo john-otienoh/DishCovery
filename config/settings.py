@@ -42,9 +42,6 @@ INSTALLED_APPS = [
     "django_browser_reload",
     "taggit",
     # Local Apps
-    "accounts.apps.AccountsConfig",
-    "home.apps.HomeConfig",
-    "recipe.apps.RecipeConfig",
 ]
 
 
