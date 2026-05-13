@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     "django_browser_reload",
     "rest_framework",
     "rest_framework_simplejwt",
-    "corsheaders",
     "django_filters",
     "drf_spectacular",
     "corsheaders",
@@ -74,7 +73,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "config.urls"
-AUTH_USER_MODEL = "apps.users.User"
+AUTH_USER_MODEL = "users.User"
 
 TEMPLATES = [
     {
@@ -234,4 +233,5 @@ SPECTACULAR_SETTINGS = {
         {"name": "Recipes", "description": "Create, retrieve, update and delete recipes"},
         {"name": "Interactions", "description": "Ratings, comments, favorites, and shares"},
         {"name": "Notifications", "description": "User activity notifications"},
+    ]
 }

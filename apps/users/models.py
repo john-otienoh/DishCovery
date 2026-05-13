@@ -14,7 +14,7 @@ class User(AbstractUser):
     )
     followers_count = models.PositiveIntegerField(default=0)
     following_count = models.PositiveIntegerField(default=0)
-    recipe_count = models.PositiveIntegerField(default=0)
+    recipes_count = models.PositiveIntegerField(default=0)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]

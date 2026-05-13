@@ -50,10 +50,10 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
-class UserPublicSerializer(serializers.Model.Serializer):
+class UserPublicSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields= {
+        fields = (
             "id",
             "username",
             "avatar",
@@ -61,7 +61,7 @@ class UserPublicSerializer(serializers.Model.Serializer):
             "followers_count",
             "following_count",
             "recipes_count",
-        }
+        )
         read_only_fields = fields
         
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

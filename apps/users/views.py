@@ -72,7 +72,7 @@ class ChangePasswordView(APIView):
             {"detail": "Password updated successfully"}
         )
     
-class ProfileView(generics.RetreiveUpadateAPIView):
+class ProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -90,7 +90,7 @@ class UserListView(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
     search_fields = ["username"]
 
-    def def get_queryset(self):
+    def get_queryset(self):
         return User.objects.all()
         
 class FollowView(APIView):

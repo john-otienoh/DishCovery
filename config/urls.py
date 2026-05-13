@@ -25,8 +25,8 @@ from drf_spectacular.views import (
 )
 
 api_v1_patterns = [
-    path("auth/", include("apps.users.urls.auth")),
-    path("users/", include("apps.users.urls.urls")),
+    path("auth/", include("apps.users.auth")),
+    path("users/", include("apps.users.urls")),
     path("recipes/", include("apps.recipes.urls")),
     path("interactions/", include("apps.interactions.urls")),
     path("notifications/", include("apps.notifications.urls")),
@@ -36,6 +36,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # API v1
     path("api/v1/", include(api_v1_patterns)),
+    path('__reload__/', include('django_browser_reload.urls')),
     # OpenAPI schema
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),

@@ -1,53 +1,180 @@
-# Create your views here.
-from rest_framework import serializers
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from apps.recipes.serializers import RecipeListSerializer
-from apps.users.serializers import UserPublicSerializer
+from apps.notifications.services import create_notification
+from apps.recipes.models import Recipe
 from .models import Comment, Rating, RecipeShare, SavedRecipe
+from .serializers import (
+    CommentSerializer,
+    RatingSerializer,
+    RecipeShareSerializer,
+    SavedRecipeSerializer,
+)
 
 
-class RatingSerializer(serializers.ModelSerializer):
-    user = UserPublicSerializer(read_only=True)
 
-    class Meta:
-        model = Rating
-        fields = ("id", "user", "score", "created_at", "updated_at")
-        read_only_fields = ("id", "user", "created_at", "updated_at")
+class RecipeRatingView(APIView):
+    """
+    POST /api/v1/interactions/recipes/<id>/rate/
+        body: {"score": 1-5}
+    Creates or updates the calling user's rating for the recipe.
+    """
 
-    def validate_score(self, value):
-        if not (1 <= value <= 5):
-            raise serializers.ValidationError("Score must be between 1 and 5.")
-        return value
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, recipe_id):
+        recipe = get_object_or_404(Recipe, pk=recipe_id, is_published=True)
+        serializer = RatingSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        rating, created = Rating.objects.update_or_create(
+            recipe=recipe,
+            user=request.user,
+            defaults={"score": serializer.validated_data["score"]},
+        )
+
+        if created and recipe.author != request.user:
+            create_notification(
+                recipient=recipe.author,
+                actor=request.user,
+                verb=f"rated your recipe '{recipe.name}' {rating.score}/5",
+                notification_type="rating",
+                target_id=recipe.pk,
+            )
+
+        return Response(
+            RatingSerializer(rating).data,
+            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
+        )
+
+    def delete(self, request, recipe_id):
+        recipe = get_object_or_404(Recipe, pk=recipe_id)
+        deleted, _ = Rating.objects.filter(recipe=recipe, user=request.user).delete()
+        if deleted:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"detail": "No rating found."}, status=status.HTTP_404_NOT_FOUND)
 
 
-class CommentSerializer(serializers.ModelSerializer):
-    author = UserPublicSerializer(read_only=True)
-    replies = serializers.SerializerMethodField()
+class RecipeRatingListView(generics.ListAPIView):
+    """GET /api/v1/interactions/recipes/<id>/ratings/ — all ratings for a recipe."""
 
-    class Meta:
-        model = Comment
-        fields = ("id", "author", "parent", "body", "is_edited", "replies", "created_at", "updated_at")
-        read_only_fields = ("id", "author", "is_edited", "created_at", "updated_at")
+    serializer_class = RatingSerializer
+    permission_classes = [permissions.AllowAny]
 
-    def get_replies(self, obj):
-        """Return one level of replies (children only)."""
-        if obj.parent is not None:
-            return []
-        qs = obj.replies.select_related("author").order_by("created_at")
-        return CommentSerializer(qs, many=True).data
+    def get_queryset(self):
+        recipe = get_object_or_404(Recipe, pk=self.kwargs["recipe_id"])
+        return Rating.objects.filter(recipe=recipe).select_related("user")
 
 
-class SavedRecipeSerializer(serializers.ModelSerializer):
-    recipe = RecipeListSerializer(read_only=True)
 
-    class Meta:
-        model = SavedRecipe
-        fields = ("id", "recipe", "created_at")
-        read_only_fields = ("id", "created_at")
+class RecipeCommentListCreateView(generics.ListCreateAPIView):
+    """
+    GET  /api/v1/interactions/recipes/<id>/comments/ — top-level comments with replies.
+    POST /api/v1/interactions/recipes/<id>/comments/ — post a comment or reply.
+    """
+
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        recipe = get_object_or_404(Recipe, pk=self.kwargs["recipe_id"])
+        return (
+            Comment.objects.filter(recipe=recipe, parent=None)
+            .select_related("author")
+            .prefetch_related("replies__author")
+        )
+
+    def perform_create(self, serializer):
+        recipe = get_object_or_404(Recipe, pk=self.kwargs["recipe_id"])
+        comment = serializer.save(author=self.request.user, recipe=recipe)
+        # Notify recipe author (not self-comments)
+        if recipe.author != self.request.user:
+            create_notification(
+                recipient=recipe.author,
+                actor=self.request.user,
+                verb=f"commented on your recipe '{recipe.name}'",
+                notification_type="comment",
+                target_id=recipe.pk,
+            )
+        return comment
 
 
-class RecipeShareSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RecipeShare
-        fields = ("id", "platform", "created_at")
-        read_only_fields = ("id", "created_at")
+class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """GET / PATCH / DELETE /api/v1/interactions/comments/<id>/"""
+
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Comment.objects.select_related("author")
+
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+
+    def check_object_permissions(self, request, obj):
+        super().check_object_permissions(request, obj)
+        if request.method not in permissions.SAFE_METHODS and obj.author != request.user:
+            self.permission_denied(request, message="You can only edit your own comments.")
+
+    def perform_update(self, serializer):
+        serializer.save(is_edited=True)
+
+
+class SavedRecipeListView(generics.ListAPIView):
+    """GET /api/v1/interactions/saved/ — current user's saved recipes."""
+
+    serializer_class = SavedRecipeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return (
+            SavedRecipe.objects.filter(user=self.request.user)
+            .select_related("recipe__author")
+            .prefetch_related("recipe__tags", "recipe__meal_types")
+        )
+
+
+class RecipeSaveToggleView(APIView):
+    """
+    POST /api/v1/interactions/recipes/<id>/save/
+    Saves or unsaves the recipe for the authenticated user.
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, recipe_id):
+        recipe = get_object_or_404(Recipe, pk=recipe_id, is_published=True)
+        saved, created = SavedRecipe.objects.get_or_create(user=request.user, recipe=recipe)
+        if not created:
+            saved.delete()
+            return Response({"detail": "Recipe removed from saved.", "saved": False})
+        return Response(
+            {"detail": "Recipe saved.", "saved": True},
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class RecipeShareView(APIView):
+    """
+    POST /api/v1/interactions/recipes/<id>/share/
+        body: {"platform": "whatsapp"}
+    Logs a share event and returns a shareable URL.
+    """
+
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def post(self, request, recipe_id):
+        recipe = get_object_or_404(Recipe, pk=recipe_id, is_published=True)
+        serializer = RecipeShareSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        share = serializer.save(
+            recipe=recipe,
+            shared_by=request.user if request.user.is_authenticated else None,
+        )
+        share_url = request.build_absolute_uri(f"/api/v1/recipes/{recipe.pk}/")
+        return Response(
+            {**RecipeShareSerializer(share).data, "share_url": share_url},
+            status=status.HTTP_201_CREATED,
+        )
