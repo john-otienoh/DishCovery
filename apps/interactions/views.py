@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, permissions, status
+from drf_spectacular.utils import extend_schema, inline_serializer, OpenApiResponse
+from rest_framework import generics, permissions, serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -14,7 +15,20 @@ from .serializers import (
 )
 
 
+# ─── Ratings ───────────────────────────────────────────────────────────────────
 
+@extend_schema(
+    methods=["POST"],
+    request=RatingSerializer,
+    responses={200: RatingSerializer, 201: RatingSerializer},
+    description="Create or update your rating (1–5) for a recipe.",
+)
+@extend_schema(
+    methods=["DELETE"],
+    request=None,
+    responses={204: None, 404: OpenApiResponse(description="No rating found.")},
+    description="Remove your rating for a recipe.",
+)
 class RecipeRatingView(APIView):
     """
     POST /api/v1/interactions/recipes/<id>/rate/
@@ -64,10 +78,13 @@ class RecipeRatingListView(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return Rating.objects.none()
         recipe = get_object_or_404(Recipe, pk=self.kwargs["recipe_id"])
         return Rating.objects.filter(recipe=recipe).select_related("user")
 
 
+# ─── Comments ──────────────────────────────────────────────────────────────────
 
 class RecipeCommentListCreateView(generics.ListCreateAPIView):
     """
@@ -79,6 +96,8 @@ class RecipeCommentListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return Comment.objects.none()
         recipe = get_object_or_404(Recipe, pk=self.kwargs["recipe_id"])
         return (
             Comment.objects.filter(recipe=recipe, parent=None)
@@ -122,6 +141,8 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
         serializer.save(is_edited=True)
 
 
+# ─── Saved Recipes (Favourites) ────────────────────────────────────────────────
+
 class SavedRecipeListView(generics.ListAPIView):
     """GET /api/v1/interactions/saved/ — current user's saved recipes."""
 
@@ -129,6 +150,8 @@ class SavedRecipeListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return SavedRecipe.objects.none()
         return (
             SavedRecipe.objects.filter(user=self.request.user)
             .select_related("recipe__author")
@@ -136,6 +159,14 @@ class SavedRecipeListView(generics.ListAPIView):
         )
 
 
+@extend_schema(
+    request=None,
+    responses={
+        200: inline_serializer("UnsaveResponse", fields={"detail": serializers.CharField(), "saved": serializers.BooleanField()}),
+        201: inline_serializer("SaveResponse", fields={"detail": serializers.CharField(), "saved": serializers.BooleanField()}),
+    },
+    description="Toggle save/unsave a recipe for the authenticated user.",
+)
 class RecipeSaveToggleView(APIView):
     """
     POST /api/v1/interactions/recipes/<id>/save/
@@ -156,6 +187,18 @@ class RecipeSaveToggleView(APIView):
         )
 
 
+# ─── Shares ────────────────────────────────────────────────────────────────────
+
+@extend_schema(
+    request=RecipeShareSerializer,
+    responses={201: inline_serializer("ShareResponse", fields={
+        "id": serializers.IntegerField(),
+        "platform": serializers.CharField(),
+        "created_at": serializers.DateTimeField(),
+        "share_url": serializers.URLField(),
+    })},
+    description="Log a share event and receive a shareable URL.",
+)
 class RecipeShareView(APIView):
     """
     POST /api/v1/interactions/recipes/<id>/share/

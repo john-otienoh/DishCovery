@@ -1,6 +1,8 @@
+from django.db.models import Q
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, permissions
+from drf_spectacular.utils import extend_schema
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -14,24 +16,28 @@ from .serializers import (
     TagSerializer,
 )
 
-# Create your views here.
-
 User = get_user_model()
 
 
+# ─── Tag & MealType ────────────────────────────────────────────────────────────
+
 class TagListView(generics.ListCreateAPIView):
+    """GET /api/v1/recipes/tags/ — list all tags (authenticated to create)."""
+
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class MealTypeListView(generics.ListCreateAPIView):
+    """GET /api/v1/recipes/meal-types/"""
 
     queryset = MealType.objects.all()
     serializer_class = MealTypeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
+# ─── Recipe CRUD ───────────────────────────────────────────────────────────────
 
 class RecipeListCreateView(generics.ListCreateAPIView):
     """
@@ -72,6 +78,7 @@ class RecipeListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         recipe = serializer.save(author=self.request.user)
+        # Update author's recipe counter
         User.objects.filter(pk=self.request.user.pk).update(
             recipes_count=self.request.user.recipes_count + 1
         )
@@ -79,6 +86,7 @@ class RecipeListCreateView(generics.ListCreateAPIView):
 
 
 class RecipeDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """GET / PUT / PATCH / DELETE /api/v1/recipes/<id>/"""
 
     serializer_class = RecipeDetailSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
@@ -97,6 +105,8 @@ class RecipeDetailView(generics.RetrieveUpdateDestroyAPIView):
         )
 
 
+# ─── User recipe list ──────────────────────────────────────────────────────────
+
 class UserRecipeListView(generics.ListAPIView):
     """GET /api/v1/recipes/by/<username>/ — all published recipes by a user."""
 
@@ -104,6 +114,8 @@ class UserRecipeListView(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return Recipe.objects.none()
         user = get_object_or_404(User, username=self.kwargs["username"])
         return (
             Recipe.objects.filter(author=user, is_published=True)
@@ -112,6 +124,12 @@ class UserRecipeListView(generics.ListAPIView):
         )
 
 
+# ─── Cuisine & Tag exploration ─────────────────────────────────────────────────
+
+@extend_schema(
+    responses={200: {"type": "array", "items": {"type": "string"}, "example": ["Italian", "Mexican", "Indian"]}},
+    description="Return a sorted list of all distinct cuisine values from published recipes.",
+)
 class CuisineListView(APIView):
     """GET /api/v1/recipes/cuisines/ — distinct cuisine values."""
 
